@@ -1,10 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:fcm_nodejs_demo/empty_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 
 import 'my_home_page.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +22,7 @@ void main() async {
         ),
       );
 
+  // Settings For iOS Platform
   if (Platform.isIOS) {
     requestPermissionForIos(fcm);
   }
@@ -50,6 +55,32 @@ void main() async {
    * The user can terminate an app by "swiping it away" 
    * via the app switcher UI on the device or closing a tab (web).
    */
+  fcm.getInitialMessage().then((message) {
+    if (message != null) {
+      Navigator.pushNamed(
+        navigatorKey.currentState!.context,
+        '/home-page',
+        arguments: {
+          'message': jsonEncode(message.data),
+        },
+      );
+    }
+  });
+
+  // OnMessageOpenedApp
+  /**
+   * If your app is opened via a notification whilst the app is terminated
+   */
+  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async {
+    print('onMessageOpenedApp: $message');
+    Navigator.pushNamed(
+      navigatorKey.currentState!.context,
+      '/home-page',
+      arguments: {
+        'message': jsonEncode(message.data),
+      },
+    );
+  });
 
   runApp(const MyApp());
 }
@@ -57,6 +88,7 @@ void main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
+  await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -78,12 +110,17 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    String title = 'Flutter Demo Home Page';
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      navigatorKey: navigatorKey,
+      routes: {
+        '/': (context) => const EmptyPage(),
+        '/home-page': (context) => MyHomePage(title: title),
+      },
     );
   }
 }
