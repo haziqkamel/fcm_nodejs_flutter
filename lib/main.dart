@@ -37,8 +37,15 @@ void main() async {
 
     if (remoteMessage.notification != null) {
       print(
-          'Message also contained a notification: ${remoteMessage.notification}');
+          'Message also contained a notification: ${remoteMessage.notification?.title ?? '-'}');
     }
+    Navigator.pushNamed(
+      navigatorKey.currentState!.context,
+      '/home-page',
+      arguments: {
+        'message': jsonEncode(remoteMessage.data),
+      },
+    );
   });
 
   // Background
