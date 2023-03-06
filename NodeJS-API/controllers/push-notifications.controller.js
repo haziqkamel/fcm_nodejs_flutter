@@ -83,7 +83,67 @@ function sendMessageToMultipleDevices(req, res, next) {
     }
 }
 
+function sendToTopics(req, res, next) {
+
+    let topic = 'recentNews';
+    if (topic == null) {
+        return res.status(400).send({ message: 'topic is required!' });
+    }
+    let title = req.body.title;
+    if (title == null || title == '') {
+        return res.status(400).send({ message: 'title is required!' });
+    }
+    let body = req.body.content;
+    if (body == null || body == '') {
+        return res.status(400).send({ message: 'content is required!' });
+    }
+    let data = req.body.data;
+    if (data == null || data == {}) {
+        return res.status(400).send({ message: 'data is required!' });
+    }
+    let imageUrl = req.body.imageUrl;
+    if (imageUrl == null || imageUrl == '') {
+        return res.status(400).send({ message: 'imageUrl is required!' });
+    }
+
+    try {
+        let message = {
+            topic: topic,
+            notification: {
+                title: title,
+                body: body,
+            },
+            android: {
+                notification: {
+                    image: imageUrl,
+                    icon: 'stock_ticker_update',
+                    color: '#7e55c3',
+                }
+            },
+            data: data,
+        };
+
+        FCM.send(message, function (err, resp) {
+            if (err) {
+                console.log('Error sending message: ', err)
+                return res.status(500).send({
+                    message: err
+                })
+            }
+
+            console.log(`Successfully sent message: ${resp}`)
+            return res.status(200).send({
+                message: `Successfully sent message: ${resp}`
+            })
+        });
+    } catch (err) {
+        console.log(`An error has occured: ${err}`);
+        throw err;
+    }
+}
+
 module.exports = {
     sendPushNotificationSpecificUserDevice,
-    sendMessageToMultipleDevices
+    sendMessageToMultipleDevices,
+    sendToTopics
 }
