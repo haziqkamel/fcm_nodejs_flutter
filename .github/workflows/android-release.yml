@@ -41,14 +41,14 @@ jobs:
       # - name: Run Flutter Test
       #   run: flutter test
 
-      - name: Build APK
-        run: flutter build apk
+      # - name: Build APK
+      #   run: flutter build apk
 
       # Upload generated apk to the artifacts.
-      - uses: actions/upload-artifact@v1
-        with:
-          name: release-apk
-          path: build/app/outputs/apk/release/app-release.apk
+      # - uses: actions/upload-artifact@v1
+      #   with:
+      #     name: release-apk
+      #     path: build/app/outputs/apk/release/app-release.apk
 
       # - name: Start release build
       #   run: flutter build appbundle
