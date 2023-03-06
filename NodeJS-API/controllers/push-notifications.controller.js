@@ -119,8 +119,16 @@ function sendToTopics(req, res, next) {
             android: {
                 notification: {
                     image: imageUrl,
-                    icon: 'stock_ticker_update',
-                    color: '#7e55c3',
+                }
+            },
+            apns: {
+                payload: {
+                    aps: {
+                        "mutable-content": 1
+                    }
+                },
+                fcm_options: {
+                    image: imageUrl
                 }
             },
             data: data,
