@@ -23,15 +23,16 @@ function sendPushNotificationSpecificUserDevice(req, res, next) {
             token: req.body.fcm_token
         };
 
-        FCM.send(message).then((response) => {
-            console.log('Successfully sent message: ', response)
+        FCM.send(message, function (err, resp) {
+            if (err) {
+                console.log('Error sending message: ', err)
+                return res.status(500).send({
+                    message: err
+                })
+            }
+            console.log('Successfully sent message: ', resp)
             return res.status(200).send({
-                message: `Successfully sent message: ${response}`
-            })
-        }).catch((error) => {
-            console.log('Error sending message: ', error)
-            return res.status(500).send({
-                message: error
+                message: `Successfully sent message: ${resp}`
             })
         })
     } catch (err) {
@@ -57,11 +58,18 @@ function sendMessageToMultipleDevices(req, res, next) {
             tokens: req.body.fcm_tokens
         };
 
-        FCM.sendMulticast(message).then((response) => {
-            console.log(`${response.successCount} + messages were sent successfully`)
-            if (response.failureCount > 0) {
+        FCM.sendMulticast(message, function (err, resp) {
+
+            if (err) {
+                console.log('Error sending message: ', err)
+                return res.status(500).send({
+                    message: err
+                })
+            }
+            console.log(`${resp.successCount} + messages were sent successfully`)
+            if (resp.failureCount > 0) {
                 const failedTokens = [];
-                response.responses.forEach((resp, idx) => {
+                resp.responses.forEach((resp, idx) => {
                     if (!resp.success) {
                         failedTokens.push(registrationTokens[idx]);
                     }
@@ -69,14 +77,9 @@ function sendMessageToMultipleDevices(req, res, next) {
                 console.log('List of tokens that caused failures: ' + failedTokens);
             }
             return res.status(200).send({
-                message: `Successfully sent message: ${response}`
+                message: `Successfully sent message: ${resp}`
             })
-        }).catch((error) => {
-            console.log('Error sending message: ', error)
-            return res.status(500).send({
-                message: error
-            })
-        })
+        });
     } catch (err) {
         console.log(`An error has occured: ${err}`);
         throw err;
