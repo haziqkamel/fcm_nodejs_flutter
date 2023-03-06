@@ -1,4 +1,4 @@
-[![ci](https://github.com/haziqkamel/fcm_nodejs_flutter/tree/master/.github/workflows/android-release.yml/badge.svg)](hhttps://github.com/haziqkamel/fcm_nodejs_flutter/tree/master/.github/workflows/android-release.yml)
+[![ci](https://github.com/haziqkamel/fcm_nodejs_flutter/tree/master/.github/workflows/android-release.yml/badge.svg)](https://github.com/haziqkamel/fcm_nodejs_flutter/tree/master/.github/workflows/android-release.yml)
 
 # fcm_nodejs_demo
 
