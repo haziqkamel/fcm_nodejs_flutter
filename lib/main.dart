@@ -22,6 +22,10 @@ void main() async {
         ),
       );
 
+  fcm
+      .subscribeToTopic('recentNews')
+      .then((_) => print('Subscribe to recentNews topics'));
+
   // Settings For iOS Platform
   if (Platform.isIOS) {
     requestPermissionForIos(fcm);
