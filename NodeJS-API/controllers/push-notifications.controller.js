@@ -5,37 +5,34 @@ const serviceAccount = require('../config/fcm-nodejs-demo-key.json')
 const certPath = admin.credential.cert(serviceAccount)
 const FCM = new fcm(certPath)
 
-function sendPushNotification(req, res, next) {
+function sendPushNotificationSpecificUserDevice(req, res, next) {
     try {
         let message = {
             notification: {
-                title: 'Test Notification',
-                body: 'Notification message',
+                title: req.body.title,
+                body: req.body.content,
             },
-            data: {
-                orderId: '123456',
-                orderDate: '2023-03-05',
-            },
+            data: req.body.data,
             token: req.body.fcm_token
         };
 
-        FCM.send(message, function (err, resp) {
-            if (err) {
-                return res.status(500).send({
-                    message: err,
-                });
-            } else {
-                return res.status(200).send({
-                    message: 'Notification Sent',
-                });
-            }
-        });
+        FCM.send(message).then((response) => {
+            console.log('Successfully sent message: ', response)
+            return res.status(200).send({
+                message: `Successfully sent message: ${response}`
+            })
+        }).catch((error) => {
+            console.log('Error sending message: ', error)
+            return res.status(500).send({
+                message: error
+            })
+        })
     } catch (err) {
-        console.log(err);
+        console.log(`An error has occured: ${err}`);
         throw err;
     }
 }
 
 module.exports = {
-    sendPushNotification,
+    sendPushNotificationSpecificUserDevice,
 }
