@@ -1,7 +1,7 @@
 const admin = require('firebase-admin')
 const fcm = require('fcm-notification')
 
-const serviceAccount = require('../config/fcm-nodejs-demo-key.json')
+const serviceAccount = require('../config/berita-tular-firebase-key.json')
 const certPath = admin.credential.cert(serviceAccount)
 const FCM = new fcm(certPath)
 
@@ -88,9 +88,11 @@ function sendMessageToMultipleDevices(req, res, next) {
 
 function sendToTopics(req, res, next) {
 
-    let topic = 'recentNews';
+    let topic = 'beritaTular';
     if (topic == null) {
         return res.status(400).send({ message: 'topic is required!' });
+    } else {
+        topic = req.body.topic;
     }
     let title = req.body.title;
     if (title == null || title == '') {
