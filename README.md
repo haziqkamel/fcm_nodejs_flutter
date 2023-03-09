@@ -1,6 +1,6 @@
 # fcm_nodejs_demo
 
-A new Flutter project.
+Flutter Cloud Messaging with NodeJS as backend.
 
 ## Getting Started
 
