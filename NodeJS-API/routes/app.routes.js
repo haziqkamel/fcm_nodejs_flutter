@@ -1,19 +1,24 @@
-const express = require('express')
-const router = express.Router()
+const express = require("express");
+const router = express.Router();
 const {
-    sendPushNotificationSpecificUserDevice,
-    sendMessageToMultipleDevices,
-    sendToTopics
-} = require('../controllers/push-notifications.controller')
+  sendPushNotificationSpecificUserDevice,
+  sendMessageToMultipleDevices,
+  sendToTopics,
+} = require("../controllers/push-notifications.controller");
 
-router.post('/send-push-notification-specific-user-device',
-    sendPushNotificationSpecificUserDevice
-);
-router.post('/send-message-to-multiple-devices',
-    sendMessageToMultipleDevices
-);
-router.post('/send-to-topics',
-    sendToTopics
-);
+const {
+  huaweiSendataMessage,
+} = require("../controllers/huawei-push-notifications.controller");
 
-module.exports = router
+// Firebase Android and iOS
+router.post(
+  "/send-push-notification-specific-user-device",
+  sendPushNotificationSpecificUserDevice
+);
+router.post("/send-message-to-multiple-devices", sendMessageToMultipleDevices);
+router.post("/send-to-topics", sendToTopics);
+
+// HMS Huawei
+router.post("/huawei/notification/send-data", huaweiSendataMessage);
+
+module.exports = router;
